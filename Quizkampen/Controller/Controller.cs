@@ -4,24 +4,25 @@ namespace Quizkampen
 {
     internal class Controller
     {
-        private QuestionContext model;
+        private QuizkampenContext model;
+        private UserManager userManager;
         private QueryManager queryHandler;
+        private ScoreManager scoreManager;
         private MainMenuView mainMenuView;
         private StartScreenView startScreenView;
         private AnswerQuestionView answerQuestionView;
         private AddQuestionView addQuestionView;
         private LogInView logInView;
 
-        public Controller(QuestionContext model)
+        public Controller(QuizkampenContext model, UserManager userManager)
         {
             this.model = model;
+            this.userManager = userManager;
         }
-
         internal void Run()
         {
             GoToStartScreen();
         }
-
         private void GoToStartScreen() 
         {
             if (startScreenView == null) startScreenView = new StartScreenView
@@ -31,26 +32,29 @@ namespace Quizkampen
             };
             startScreenView.Display();
         }
-
         private void GoToLogIn()
         {
             logInView = new LogInView
             {
-
-            }
+                AvailableUsers = queryHandler.GetAllUsers(),
+                TryLogInCallback = queryHandler.TryLogIn,
+                AddUserCallback = queryHandler.AddUser,
+                SucessfulLoginCallback = GoToMainMenu,
+                RefreshView = GoToLogIn
+            };
+            logInView.Display();
         }
-
         private void GoToMainMenu()
         {
             mainMenuView = new MainMenuView
             {
+                ActiveUser = userManager.CurrentUser,
                 NumberOfQuestionsInDatabase = queryHandler.GetNumberOfQuestions(),
                 DisplayQuestion = GoToAnswerQuestion,
                 EnterQuestion = GoToAddQuestion
             };
             mainMenuView.Display();
         }
-
         private void GoToAnswerQuestion()
         {
             answerQuestionView = new AnswerQuestionView
@@ -59,7 +63,6 @@ namespace Quizkampen
             };
             answerQuestionView.Display();
         }
-
         private void GoToAddQuestion()
         {
             addQuestionView = new AddQuestionView
@@ -73,10 +76,11 @@ namespace Quizkampen
         {
             GoToMainMenu();
         }
-
         internal void Config()
         {
-            queryHandler = new QueryManager();
+            model.Database.EnsureCreated();
+            queryHandler = new QueryManager(model, userManager);
+            scoreManager = new ScoreManager(model);
         }
     }
 }

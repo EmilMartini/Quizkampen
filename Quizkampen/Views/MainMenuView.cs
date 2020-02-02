@@ -8,11 +8,13 @@ namespace Quizkampen
         public Action DisplayQuestion { get; set; }
         public Action EnterQuestion { get; set; }
         public Action ExitGame { get; set; }
+        public User ActiveUser { get; set; }
 
 
         public void Display()
         {
             Console.Clear();
+            Console.WriteLine($"Welcome: {ActiveUser.UserName}\n");
             Console.WriteLine("Select an action");
             Console.Write("1. Play Game \n2. Add Question \n3. Exit Game \n\n");
             Console.WriteLine($"Current number of questions in database: {NumberOfQuestionsInDatabase}");
