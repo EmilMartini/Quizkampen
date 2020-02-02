@@ -51,7 +51,8 @@ namespace Quizkampen
                 ActiveUser = userManager.CurrentUser,
                 NumberOfQuestionsInDatabase = queryHandler.GetNumberOfQuestions(),
                 DisplayQuestion = GoToAnswerQuestion,
-                EnterQuestion = GoToAddQuestion
+                EnterQuestion = GoToAddQuestion,
+                LogOut = GoToLogIn
             };
             mainMenuView.Display();
         }
