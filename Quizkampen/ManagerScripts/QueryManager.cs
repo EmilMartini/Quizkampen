@@ -53,7 +53,7 @@ namespace Quizkampen
         {
             try
             {
-                userManager.CurrentUser = context.Users.Where(o => o.IdentityId == id).First();
+                userManager.CurrentUser = context.Users.Where(o => o.LogInId == id).First();
                 return true;
             }
             catch (Exception ex)

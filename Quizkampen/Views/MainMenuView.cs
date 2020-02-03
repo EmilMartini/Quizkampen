@@ -5,7 +5,7 @@ namespace Quizkampen
     class MainMenuView : View
     {
         public int NumberOfQuestionsInDatabase { get; set; }
-        public Func<string, Result> InputValidation { get; set; }
+        public Func<string, Result> ParseInputValidation { get; set; }
         public Action DisplayQuestion { get; set; }
         public Action EnterQuestion { get; set; }
         public Action LogOut { get; set; }
@@ -19,7 +19,7 @@ namespace Quizkampen
             Console.WriteLine("Select an action");
             Console.Write("1. Play Game \n2. Add Question \n3. Log Out\n4. Exit Game \n\n");
             Console.WriteLine($"Current number of questions in database: {NumberOfQuestionsInDatabase}");
-            MenuOption(int.Parse(ValidateInput(InputValidation)));
+            MenuOption(int.Parse(ValidateInput(ParseInputValidation)));
         }
         private void MenuOption(int input)
         {

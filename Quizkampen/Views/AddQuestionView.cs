@@ -23,7 +23,6 @@ namespace Quizkampen
             AddQuestionCallback(CreateQuestion(questionInput));
             ReturnCallback();
         }
-
         private void SelectRightAnswer(QuestionInputForm questionInput, int v)
         {
             questionInput.Answers[v - 1].isCorrect = true;
@@ -36,6 +35,7 @@ namespace Quizkampen
             foreach (var answer in questionInput.Answers)
             {
                 Console.WriteLine($"{index}: {answer.Title}");
+                index++;
             }
             Console.WriteLine();
         }
@@ -61,6 +61,7 @@ namespace Quizkampen
                 Answers = questionInput.Answers,
             };
             Console.WriteLine("Added question...");
+            WaitForKeyPress();
             return question;
         }
     }

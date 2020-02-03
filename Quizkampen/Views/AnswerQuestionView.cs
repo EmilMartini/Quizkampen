@@ -5,7 +5,7 @@ namespace Quizkampen
     internal class AnswerQuestionView : View
     {
         public Question GeneratedQuestion { get; set; }
-        public Func<string, Result> ParseValidation { get; set; }
+        public Func<string, Result> ParseInputValidation { get; set; }
         public Action ScoreScreenCallback { get; set; }
         public Action IncreaseScoreCallback { get; set; }
         public Action MainMenuCallback { get; set; }
@@ -25,15 +25,15 @@ namespace Quizkampen
             }
 
             DisplayQuestion();
-            Console.WriteLine("Enter the right answer.");
-            CheckIfCorrect(int.Parse(ValidateInput(ParseValidation)));
+            Console.WriteLine("\nAnswer by entering [Answer Id].");
+            CheckIfCorrect(int.Parse(ValidateInput(ParseInputValidation)));
         }
         private void DisplayQuestion()
         {
             Console.WriteLine($"Question: {GeneratedQuestion.Title}");
             foreach (var answer in GeneratedQuestion.Answers)
             {
-                Console.WriteLine($"Answer: {index} \t{answer.Title}");
+                Console.WriteLine($"[{index}]: \t{answer.Title}");
                 index++;
                 if (answer.isCorrect)
                 {

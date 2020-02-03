@@ -6,13 +6,13 @@ namespace Quizkampen
     {
         private QuizkampenContext model;
         private UserManager userManager;
-        private QueryManager queryHandler;
+        private QueryManager query;
+        private LogInView logInView;
         private ScoreManager scoreManager;
         private MainMenuView mainMenuView;
         private StartScreenView startScreenView;
         private AnswerQuestionView answerQuestionView;
         private AddQuestionView addQuestionView;
-        private LogInView logInView;
         private ScoreScreenView scoreScreenView;
 
         public Controller(QuizkampenContext model, UserManager userManager)
@@ -37,6 +37,7 @@ namespace Quizkampen
         private void GoToMainMenu()
         {
             InitializeMainMenu();
+            scoreManager.ResetScore();
             mainMenuView.Display();
         }
         private void GoToAnswerQuestion()
@@ -52,7 +53,7 @@ namespace Quizkampen
         private void GoToScoreScreen()
         {
             InitializeScoreScreen();
-            queryHandler.CheckIfNewHighScore(userManager.CurrentUser, scoreManager.GetScore());
+            query.CheckIfNewHighScore(userManager.CurrentUser, scoreManager.GetScore());
             scoreScreenView.Display();
         }
 
@@ -65,37 +66,38 @@ namespace Quizkampen
         private void InitializeLoginView()
         {
             logInView = new LogInView();
-            logInView.AvailableUsers = queryHandler.GetAllUsers();
-            logInView.TryLogInCallback = queryHandler.TryLogIn;
-            logInView.AddUserCallback = queryHandler.AddUser;
+            logInView.AvailableUsers = query.GetAllUsers();
+            logInView.TryLogInCallback = query.TryLogIn;
+            logInView.AddUserCallback = query.AddUser;
             logInView.SucessfulLoginCallback = GoToMainMenu;
-            logInView.ValidateInputParse = logInView.ValidateParse;
+            logInView.ParseInputValidation = logInView.ValidateInputParse;
             logInView.RefreshView = GoToLogIn;
         }
         private void InitializeMainMenu()
         {
             mainMenuView = new MainMenuView();
             mainMenuView.ActiveUser = userManager.CurrentUser;
-            mainMenuView.NumberOfQuestionsInDatabase = queryHandler.GetNumberOfQuestions();
+            mainMenuView.NumberOfQuestionsInDatabase = query.GetNumberOfQuestions();
             mainMenuView.DisplayQuestion = GoToAnswerQuestion;
             mainMenuView.EnterQuestion = GoToAddQuestion;
             mainMenuView.LogOut = GoToLogIn;
-            mainMenuView.InputValidation = mainMenuView.ValidateParse;
+            mainMenuView.ParseInputValidation = mainMenuView.ValidateInputParse;
         }
         private void InitializeAnswerQuestion()
         {
             answerQuestionView = new AnswerQuestionView();
-            answerQuestionView.GeneratedQuestion = queryHandler.GetRandomQuestion();
+            answerQuestionView.GeneratedQuestion = query.GetRandomQuestion();
             answerQuestionView.ScoreScreenCallback = GoToScoreScreen;
             answerQuestionView.IncreaseScoreCallback = scoreManager.IncreaseScore;
+            answerQuestionView.ParseInputValidation = answerQuestionView.ValidateInputParse;
             answerQuestionView.MainMenuCallback = GoToMainMenu;
         }
         private void InitializeAddQuestionView()
         {
             addQuestionView = new AddQuestionView();
-            addQuestionView.ParseToInt = addQuestionView.ValidateParse;
+            addQuestionView.ParseToInt = addQuestionView.ValidateInputParse;
             addQuestionView.StringInputValidation = addQuestionView.ValidateInputString;
-            addQuestionView.AddQuestionCallback = queryHandler.AddQuestion;
+            addQuestionView.AddQuestionCallback = query.AddQuestion;
             addQuestionView.ReturnCallback = GoToMainMenu;
 
         }
@@ -111,7 +113,7 @@ namespace Quizkampen
         public void Config()
         {
             model.Database.EnsureCreated();
-            queryHandler = new QueryManager(model, userManager);
+            query = new QueryManager(model, userManager);
             scoreManager = new ScoreManager();
         }
     }

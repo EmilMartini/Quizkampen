@@ -42,7 +42,7 @@ namespace Quizkampen
 
             return result;
         }
-        public Result ValidateParse(string input)
+        public Result ValidateInputParse(string input)
         {
             var result = new Result();
             var parsedResult = 0;

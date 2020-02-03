@@ -12,5 +12,9 @@
         {
             return currentScore;
         }
+        public void ResetScore()
+        {
+            currentScore = 0;
+        }
     }
 }
