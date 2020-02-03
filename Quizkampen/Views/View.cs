@@ -25,7 +25,6 @@ namespace Quizkampen
                         Console.WriteLine(message);
                     }
                 }
-
             } while (!retry);
             return input;
         }
@@ -39,7 +38,6 @@ namespace Quizkampen
                 result.Success = false;
                 return result;
             }
-
             return result;
         }
         public Result ValidateInputParse(string input)

@@ -1,5 +1,4 @@
-﻿using System;
-
+﻿
 namespace Quizkampen
 {
     internal class Controller
@@ -99,7 +98,6 @@ namespace Quizkampen
             addQuestionView.StringInputValidation = addQuestionView.ValidateInputString;
             addQuestionView.AddQuestionCallback = query.AddQuestion;
             addQuestionView.ReturnCallback = GoToMainMenu;
-
         }
         private void InitializeScoreScreen()
         {
@@ -110,11 +108,12 @@ namespace Quizkampen
             scoreScreenView.NextQuestionCallback = GoToAnswerQuestion;
             scoreScreenView.InputValidation = scoreScreenView.ValidateInputString;
         }
-        public void Config()
+        public void Config(Seed seed)
         {
             model.Database.EnsureCreated();
             query = new QueryManager(model, userManager);
             scoreManager = new ScoreManager();
+            if(query.GetNumberOfQuestions() <= 0) seed.AddQuestions();
         }
     }
 }

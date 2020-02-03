@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Quizkampen
 {
@@ -102,7 +101,7 @@ namespace Quizkampen
                     {
                         id = new Guid(),
                         Title = "Dogs",
-                        isCorrect = true
+                        isCorrect = false
                     },
                     new Answer
                     {

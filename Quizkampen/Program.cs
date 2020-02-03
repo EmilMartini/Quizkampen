@@ -1,5 +1,4 @@
-﻿using System;
-
+﻿
 namespace Quizkampen
 {
     class Program
@@ -8,16 +7,11 @@ namespace Quizkampen
         {
             var model = new QuizkampenContext();
             var userManager = new UserManager();
+            var seed = new Seed(model);
 
 
             var controller = new Controller(model, userManager);
-            controller.Config();
-
-            //If first time starting program
-            //var seed = new Seed(model);
-            //seed.AddQuestions();
-
-            //Else
+            controller.Config(seed);
             controller.Run();
         }
     }
