@@ -9,12 +9,12 @@ namespace Quizkampen
         QuizkampenContext context;
         UserManager userManager;
         Random rnd = new Random();
-        public QueryManager(QuizkampenContext model, UserManager userManager)
+
+        public QueryManager(QuizkampenContext context, UserManager userManager)
         {
-            context = model;
+            this.context = context;
             this.userManager = userManager;
         }
-
         public Question GetRandomQuestion()
         {
             try
@@ -34,7 +34,8 @@ namespace Quizkampen
             {
                 context.Questions.Add(question);
                 context.SaveChanges();
-            } catch (Exception ex)
+            } 
+            catch (Exception ex)
             {
                 Console.WriteLine(ex.Message + "\n");
             }    
@@ -43,22 +44,15 @@ namespace Quizkampen
         {
             return context.Questions.Count();
         }
-        public int GetScoreFromUser(User user)
-        {
-            return context.Users.Where(o => o == user).First().HighScore;
-        }
-
         internal void AddUser(User user)
         {
             context.Users.Add(user);
             context.SaveChanges();
         }
-
         public bool TryLogIn(int id)
         {
             try
             {
-                var user = context.Users.Where(o => o.IdentityId == id).First();
                 userManager.CurrentUser = context.Users.Where(o => o.IdentityId == id).First();
                 return true;
             }
@@ -67,16 +61,6 @@ namespace Quizkampen
                 Console.WriteLine(ex.Message);
                 return false;
             }
-        }
-
-        public void AddScoreToUser(User user, int score)
-        {
-            context.Users.Where(o => o == user).First().HighScore += score;
-            context.SaveChanges();
-        }
-        public User GetUser()
-        {
-            return null;
         }
         public List<User> GetAllUsers()
         {
@@ -87,6 +71,14 @@ namespace Quizkampen
             catch (InvalidOperationException)
             {
                 return null;             
+            }
+        }
+        public void CheckIfNewHighScore(User currentUser, int currentUserScore)
+        {
+            if(context.Users.Where(o => o.Id == currentUser.Id).First().HighScore <= currentUserScore)
+            {
+                context.Users.Where(o => o == currentUser).First().HighScore = currentUserScore;
+                context.SaveChanges();
             }
         }
     }

@@ -1,18 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Quizkampen
+﻿namespace Quizkampen
 {
     class ScoreManager
     {
-        QuizkampenContext context;
-        private QuizkampenContext model;
+        private int currentScore;
 
-        public ScoreManager(QuizkampenContext model)
+        public void IncreaseScore()
         {
-            this.model = model;
+            currentScore += 1;
+        }
+        public int GetScore()
+        {
+            return currentScore;
         }
     }
 }

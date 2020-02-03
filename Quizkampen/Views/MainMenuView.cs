@@ -2,15 +2,14 @@
 
 namespace Quizkampen
 {
-    class MainMenuView
+    class MainMenuView : View
     {
         public int NumberOfQuestionsInDatabase { get; set; }
+        public Func<string, Result> InputValidation { get; set; }
         public Action DisplayQuestion { get; set; }
         public Action EnterQuestion { get; set; }
-        public Action ExitGame { get; set; }
         public Action LogOut { get; set; }
         public User ActiveUser { get; set; }
-
 
         public void Display()
         {
@@ -20,20 +19,7 @@ namespace Quizkampen
             Console.WriteLine("Select an action");
             Console.Write("1. Play Game \n2. Add Question \n3. Log Out\n4. Exit Game \n\n");
             Console.WriteLine($"Current number of questions in database: {NumberOfQuestionsInDatabase}");
-            var result = Console.ReadKey().KeyChar.ToString();
-            Console.Clear();
-            try
-            {
-                var parsedResult = int.Parse(result);
-                MenuOption(parsedResult);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"You entered an incorrect input.\nError message: {ex.Message}\nTry again.");
-                Console.ReadKey();
-                Console.Clear();
-                Display();
-            }
+            MenuOption(int.Parse(ValidateInput(InputValidation)));
         }
         private void MenuOption(int input)
         {
@@ -45,14 +31,14 @@ namespace Quizkampen
                 case 2:
                     EnterQuestion();
                     break;
+                case 3:
+                    LogOut();
+                    break;
                 case 4:
                     //Exit application, in this case 'nothing' closes the console app.
                     //
                     //Enter your callback to desired exit application method here
                     //
-                    break;
-                case 3:
-                    LogOut();
                     break;
                 default:
                     Console.Clear();

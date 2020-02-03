@@ -13,6 +13,7 @@ namespace Quizkampen
         private AnswerQuestionView answerQuestionView;
         private AddQuestionView addQuestionView;
         private LogInView logInView;
+        private ScoreScreenView scoreScreenView;
 
         public Controller(QuizkampenContext model, UserManager userManager)
         {
@@ -25,63 +26,93 @@ namespace Quizkampen
         }
         private void GoToStartScreen() 
         {
-            if (startScreenView == null) startScreenView = new StartScreenView
-            {
-                Message = "Welcome to Quizkampen 2.0",
-                Callback = GoToLogIn
-            };
+            InitializeStartScreen();
             startScreenView.Display();
         }
         private void GoToLogIn()
         {
-            logInView = new LogInView
-            {
-                AvailableUsers = queryHandler.GetAllUsers(),
-                TryLogInCallback = queryHandler.TryLogIn,
-                AddUserCallback = queryHandler.AddUser,
-                SucessfulLoginCallback = GoToMainMenu,
-                RefreshView = GoToLogIn
-            };
+            InitializeLoginView();
             logInView.Display();
         }
         private void GoToMainMenu()
         {
-            mainMenuView = new MainMenuView
-            {
-                ActiveUser = userManager.CurrentUser,
-                NumberOfQuestionsInDatabase = queryHandler.GetNumberOfQuestions(),
-                DisplayQuestion = GoToAnswerQuestion,
-                EnterQuestion = GoToAddQuestion,
-                LogOut = GoToLogIn
-            };
+            InitializeMainMenu();
             mainMenuView.Display();
         }
         private void GoToAnswerQuestion()
         {
-            answerQuestionView = new AnswerQuestionView
-            {
-                GeneratedQuestion = queryHandler.GetRandomQuestion()
-            };
+            InitializeAnswerQuestion();
             answerQuestionView.Display();
         }
         private void GoToAddQuestion()
         {
-            addQuestionView = new AddQuestionView
-            {
-                AddQuestionCallback = queryHandler.AddQuestion,
-                ReturnCallback = GoToMainMenu
-            };
+            InitializeAddQuestionView();
             addQuestionView.Display();
         }
-        private void GoToScoreScreen(int inputScore)
+        private void GoToScoreScreen()
         {
-            GoToMainMenu();
+            InitializeScoreScreen();
+            queryHandler.CheckIfNewHighScore(userManager.CurrentUser, scoreManager.GetScore());
+            scoreScreenView.Display();
         }
-        internal void Config()
+
+        private void InitializeStartScreen()
+        {
+            startScreenView = new StartScreenView();
+            startScreenView.Message = "Welcome to Quizkampen 2.0";
+            startScreenView.LogInCallback = GoToLogIn;
+        }
+        private void InitializeLoginView()
+        {
+            logInView = new LogInView();
+            logInView.AvailableUsers = queryHandler.GetAllUsers();
+            logInView.TryLogInCallback = queryHandler.TryLogIn;
+            logInView.AddUserCallback = queryHandler.AddUser;
+            logInView.SucessfulLoginCallback = GoToMainMenu;
+            logInView.ValidateInputParse = logInView.ValidateParse;
+            logInView.RefreshView = GoToLogIn;
+        }
+        private void InitializeMainMenu()
+        {
+            mainMenuView = new MainMenuView();
+            mainMenuView.ActiveUser = userManager.CurrentUser;
+            mainMenuView.NumberOfQuestionsInDatabase = queryHandler.GetNumberOfQuestions();
+            mainMenuView.DisplayQuestion = GoToAnswerQuestion;
+            mainMenuView.EnterQuestion = GoToAddQuestion;
+            mainMenuView.LogOut = GoToLogIn;
+            mainMenuView.InputValidation = mainMenuView.ValidateParse;
+        }
+        private void InitializeAnswerQuestion()
+        {
+            answerQuestionView = new AnswerQuestionView();
+            answerQuestionView.GeneratedQuestion = queryHandler.GetRandomQuestion();
+            answerQuestionView.ScoreScreenCallback = GoToScoreScreen;
+            answerQuestionView.IncreaseScoreCallback = scoreManager.IncreaseScore;
+            answerQuestionView.MainMenuCallback = GoToMainMenu;
+        }
+        private void InitializeAddQuestionView()
+        {
+            addQuestionView = new AddQuestionView();
+            addQuestionView.ParseToInt = addQuestionView.ValidateParse;
+            addQuestionView.StringInputValidation = addQuestionView.ValidateInputString;
+            addQuestionView.AddQuestionCallback = queryHandler.AddQuestion;
+            addQuestionView.ReturnCallback = GoToMainMenu;
+
+        }
+        private void InitializeScoreScreen()
+        {
+            scoreScreenView = new ScoreScreenView();
+            scoreScreenView.CurrentScore = scoreManager.GetScore();
+            scoreScreenView.User = userManager.CurrentUser;
+            scoreScreenView.MainMenuCallback = GoToMainMenu;
+            scoreScreenView.NextQuestionCallback = GoToAnswerQuestion;
+            scoreScreenView.InputValidation = scoreScreenView.ValidateInputString;
+        }
+        public void Config()
         {
             model.Database.EnsureCreated();
             queryHandler = new QueryManager(model, userManager);
-            scoreManager = new ScoreManager(model);
+            scoreManager = new ScoreManager();
         }
     }
 }

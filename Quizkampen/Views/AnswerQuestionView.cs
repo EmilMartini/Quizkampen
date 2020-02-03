@@ -2,18 +2,34 @@
 
 namespace Quizkampen
 {
-    internal class AnswerQuestionView
+    internal class AnswerQuestionView : View
     {
         public Question GeneratedQuestion { get; set; }
+        public Func<string, Result> ParseValidation { get; set; }
+        public Action ScoreScreenCallback { get; set; }
+        public Action IncreaseScoreCallback { get; set; }
         public Action MainMenuCallback { get; set; }
-        public Action<int> ScoreScreenCallback { get; set; }
 
         private int correctAnswerIndex;
+        private int index = 1;
 
         public void Display()
         {
-            int index = 1;
-            int userInput;
+            Console.Clear();
+            if(GeneratedQuestion == null)
+            {
+                Console.WriteLine("No questions in database.");
+                Console.WriteLine("Enter one before playing.");
+                WaitForKeyPress();
+                MainMenuCallback();
+            }
+
+            DisplayQuestion();
+            Console.WriteLine("Enter the right answer.");
+            CheckIfCorrect(int.Parse(ValidateInput(ParseValidation)));
+        }
+        private void DisplayQuestion()
+        {
             Console.WriteLine($"Question: {GeneratedQuestion.Title}");
             foreach (var answer in GeneratedQuestion.Answers)
             {
@@ -24,47 +40,21 @@ namespace Quizkampen
                     correctAnswerIndex = index - 1;
                 }
             }
-            Console.WriteLine("Enter the right answer.");
-            if (CheckIfValidInput(out userInput))
-            {
-                CheckIfCorrect(userInput);
-            } else
-            {
-                Display();
-            }
         }
-
         private void CheckIfCorrect(int userInput)
         {
-            int score = 0;
             Console.WriteLine();
             if(userInput == correctAnswerIndex)
             {
                 Console.WriteLine($"Congratulations! You answered correctly.");
-                score = 1;
+                IncreaseScoreCallback();
             } else
             {
                 Console.WriteLine("Sorry, that's wrong! Better luck next time...");
             }
             Console.WriteLine("Press any key to continue...");
             Console.ReadKey();
-            ScoreScreenCallback(score);
-        }
-
-        private bool CheckIfValidInput(out int parsedResult)
-        {
-            var result = Console.ReadKey().KeyChar.ToString();
-            try
-            {
-                parsedResult = int.Parse(result);
-                return true;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                parsedResult = default;
-                return false;
-            }
+            ScoreScreenCallback();
         }
     }
 }
