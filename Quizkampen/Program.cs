@@ -5,12 +5,10 @@ namespace Quizkampen
     {
         static void Main(string[] args)
         {
-            var model = new QuizkampenContext();
+            var context = new QuizkampenContext();
             var userManager = new UserManager();
-            var seed = new Seed(model);
-
-
-            var controller = new Controller(model, userManager);
+            var seed = new Seed(context);
+            var controller = new Controller(context, userManager);
             controller.Config(seed);
             controller.Run();
         }

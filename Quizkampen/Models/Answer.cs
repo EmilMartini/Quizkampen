@@ -7,7 +7,7 @@ namespace Quizkampen
     {
         [Key]
         public Guid id { get; set; }
-        public Question Question { get; set; }
+        public virtual Question Question { get; set; }
         public string Title { get; set; }
         public bool isCorrect { get; set; }
     }

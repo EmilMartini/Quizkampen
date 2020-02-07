@@ -41,7 +41,6 @@ namespace Quizkampen
                     //
                     break;
                 default:
-                    Console.Clear();
                     Display();
                     break;
             }

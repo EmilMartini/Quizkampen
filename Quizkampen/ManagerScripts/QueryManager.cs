@@ -44,7 +44,7 @@ namespace Quizkampen
         {
             return context.Questions.Count();
         }
-        internal void AddUser(User user)
+        public void AddUser(User user)
         {
             context.Users.Add(user);
             context.SaveChanges();
@@ -53,7 +53,7 @@ namespace Quizkampen
         {
             try
             {
-                userManager.CurrentUser = context.Users.Where(o => o.LogInId == id).First();
+                userManager.CurrentUser = context.Users.Where(o => o.LogInId == id).First();   
                 return true;
             }
             catch (Exception ex)
@@ -71,6 +71,16 @@ namespace Quizkampen
             catch (InvalidOperationException)
             {
                 return null;             
+            }
+        }
+        public bool IsUniqueId(int input)
+        {
+            if(context.Users.Where(o => o.LogInId == input).Count() > 0)
+            {
+                return false;
+            } else
+            {
+                return true;
             }
         }
         public void CheckIfNewHighScore(User currentUser, int currentUserScore)

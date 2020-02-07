@@ -11,6 +11,7 @@ namespace Quizkampen
         public Action<User> AddUserCallback { get; set; }
         public Action RefreshView { get; set; } 
         public Func<string, Result> ParseInputValidation { get; set; }
+        public Func<int, bool> IsUniqueCallback { get; set; }
 
         public void Display()
         {
@@ -28,15 +29,10 @@ namespace Quizkampen
                 Console.WriteLine("Loggin in...");
                 SucessfulLoginCallback();
             }
-            else if (input == 0)
+            else
             {
                 CreateUser();
                 RefreshView();
-            }
-            else
-            {
-                Console.WriteLine("Error logging in.\nTry Again.");
-                Display();
             }
         }
         private void CreateUser()
@@ -44,9 +40,15 @@ namespace Quizkampen
             int idInput = 0;
             string userName;
             Console.Clear();
-            Console.WriteLine("Choose LogIn ID");
+            Console.WriteLine("Choose LogIn ID.");
             idInput = int.Parse(ValidateInput(ParseInputValidation));
-            Console.WriteLine("\nChoose username");
+            if (!IsUniqueCallback(idInput))
+            {
+                Console.WriteLine("\nLogInId already exists.\nEnter another Id.\n");
+                WaitForKeyPress();
+                Display();
+            }
+            Console.WriteLine("\nChoose username.");
             userName = Console.ReadLine().Trim();
             AddUserCallback(new User
             {

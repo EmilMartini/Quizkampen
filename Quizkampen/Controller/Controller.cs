@@ -55,7 +55,6 @@ namespace Quizkampen
             query.CheckIfNewHighScore(userManager.CurrentUser, scoreManager.GetScore());
             scoreScreenView.Display();
         }
-
         private void InitializeStartScreen()
         {
             startScreenView = new StartScreenView();
@@ -68,6 +67,7 @@ namespace Quizkampen
             logInView.AvailableUsers = query.GetAllUsers();
             logInView.TryLogInCallback = query.TryLogIn;
             logInView.AddUserCallback = query.AddUser;
+            logInView.IsUniqueCallback = query.IsUniqueId;
             logInView.SucessfulLoginCallback = GoToMainMenu;
             logInView.ParseInputValidation = logInView.ValidateInputParse;
             logInView.RefreshView = GoToLogIn;
@@ -107,6 +107,7 @@ namespace Quizkampen
             scoreScreenView.MainMenuCallback = GoToMainMenu;
             scoreScreenView.NextQuestionCallback = GoToAnswerQuestion;
             scoreScreenView.InputValidation = scoreScreenView.ValidateInputString;
+
         }
         public void Config(Seed seed)
         {

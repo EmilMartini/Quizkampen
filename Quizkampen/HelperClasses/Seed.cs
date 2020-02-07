@@ -143,6 +143,44 @@ namespace Quizkampen
                     },
                 }
             });
+            context.Questions.Add(new Question
+            {
+                Id = new Guid(),
+                Title = "What's Emil's best Apex Legends rank?",
+                Answers = new List<Answer>
+                {
+                    new Answer
+                    {
+                        id = new Guid(),
+                        Title = "Top 200",
+                        isCorrect = false
+                    },
+                    new Answer
+                    {
+                        id = new Guid(),
+                        Title = "Top 300",
+                        isCorrect = false
+                    },
+                    new Answer
+                    {
+                        id = new Guid(),
+                        Title = "Top 400",
+                        isCorrect = true
+                    },
+                    new Answer
+                    {
+                        id = new Guid(),
+                        Title = "Top 500",
+                        isCorrect = false
+                    },
+                    new Answer
+                    {
+                        id = new Guid(),
+                        Title = "Top 600",
+                        isCorrect = false
+                    }
+                }
+            });
             context.SaveChanges();
         }
     }

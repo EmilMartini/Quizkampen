@@ -16,16 +16,25 @@ namespace Quizkampen
             Console.WriteLine("Enter the question.");
             questionInput.Question = ValidateInput(StringInputValidation);
             Console.WriteLine("How many answers do you want to add?");
-            AddAnswers(questionInput, int.Parse(ValidateInput(ParseToInt)));
+            var numberOfAnswers = int.Parse(ValidateInput(ParseToInt));
+            Console.WriteLine($"Lets add {numberOfAnswers} answers.");
+            questionInput.Answers = new Answer[numberOfAnswers];
+            for (int i = 0; i < numberOfAnswers; i++)
+            {
+                Console.WriteLine($"Enter answer: {i + 1}");
+                questionInput.Answers[i] = new Answer
+                {
+                    Title = ValidateInput(StringInputValidation)
+                };
+            };
+
             DisplayFullQuestion(questionInput);
             Console.WriteLine("Select which answer's correct.");
-            SelectRightAnswer(questionInput, int.Parse(ValidateInput(ParseToInt)));
+            var index = int.Parse(ValidateInput(ParseToInt));
+            questionInput.Answers[index - 1].isCorrect = true;
+
             AddQuestionCallback(CreateQuestion(questionInput));
             ReturnCallback();
-        }
-        private void SelectRightAnswer(QuestionInputForm questionInput, int v)
-        {
-            questionInput.Answers[v - 1].isCorrect = true;
         }
         private void DisplayFullQuestion(QuestionInputForm questionInput)
         {
@@ -38,19 +47,6 @@ namespace Quizkampen
                 index++;
             }
             Console.WriteLine();
-        }
-        private void AddAnswers(QuestionInputForm question, int numberOfAnswers)
-        {
-            Console.WriteLine($"Lets add {numberOfAnswers} answers.");
-            question.Answers = new Answer[numberOfAnswers];
-            for (int i = 0; i < numberOfAnswers; i++)
-            {
-                Console.WriteLine($"Enter answer: {i + 1}");
-                question.Answers[i] = new Answer
-                {
-                    Title = ValidateInput(StringInputValidation)
-                };
-            }
         }
         private Question CreateQuestion(QuestionInputForm questionInput)
         {
